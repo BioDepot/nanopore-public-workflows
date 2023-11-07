@@ -1,0 +1,10 @@
+name: INSnet
+
+dependencies:
+  - python=3.9
+  - numpy
+  - pandas
+  - Matplotlib
+  - pip:
+    - TensorFlow==2.7
+    - pysam
