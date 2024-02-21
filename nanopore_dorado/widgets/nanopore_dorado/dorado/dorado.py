@@ -15,10 +15,10 @@ class OWdorado(OWBwBWidget):
     name = "dorado"
     description = "Dorado Basecaller"
     priority = 3
-    icon = getIconName(__file__,"guppy1.png")
+    icon = getIconName(__file__,"dorado.png")
     want_main_area = False
-    docker_image_name = "dorado"
-    docker_image_tag = "0.3.4-linux-x64"
+    docker_image_name = "biodepot/dorado-samtools"
+    docker_image_tag = "0.5.3__1.14__cuda-12.2__ubuntu-22.04"
     inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile")]
     outputs = [("OutputDir",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
@@ -30,10 +30,23 @@ class OWdorado(OWBwBWidget):
     optionsChecked=pset({})
     InputDir=pset(None)
     OutputDir=pset(None)
-    modelFile=pset("dna_r9.4.1_e8_fast@v3.4")
+    modelFile=pset(None)
     reference=pset(None)
     device=pset("cuda:all")
     nameSort=pset(False)
+    command=pset(None)
+    Inputfile=pset(None)
+    outputfile=pset(None)
+    kitname=pset(None)
+    resumefrom=pset(None)
+    trim=pset(None)
+    noclassify=pset(False)
+    sortandindex=pset(False)
+    modelstring=pset(None)
+    emitfastq=pset(False)
+    emitsam=pset(False)
+    chunksize=pset(None)
+    modifiedBases=pset(None)
     def __init__(self):
         super().__init__(self.docker_image_name, self.docker_image_tag)
         with open(getJsonName(__file__,"dorado")) as f:
