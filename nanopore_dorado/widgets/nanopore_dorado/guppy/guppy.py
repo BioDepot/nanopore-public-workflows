@@ -11,15 +11,15 @@ from DockerClient import DockerClient
 from BwBase import OWBwBWidget, ConnectionDict, BwbGuiElements, getIconName, getJsonName
 from PyQt5 import QtWidgets, QtGui
 
-class OWdorado(OWBwBWidget):
-    name = "dorado"
-    description = "Dorado Basecaller"
+class OWguppy(OWBwBWidget):
+    name = "guppy"
+    description = "Guppy Basecaller"
     priority = 3
-    icon = getIconName(__file__,"dorado.png")
+    icon = getIconName(__file__,"guppy1.png")
     want_main_area = False
-    docker_image_name = "biodepot/dorado-samtools"
+    docker_image_name = "biodepot/guppy"
     docker_image_tag = "latest"
-    inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile")]
+    inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("fastqdir",str,"handleInputsfastqdir"),("trigger2",str,"handleInputstrigger2")]
     outputs = [("OutputDir",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
     runMode=pset(0)
@@ -28,27 +28,21 @@ class OWdorado(OWBwBWidget):
     triggerReady=pset({})
     inputConnectionsStore=pset({})
     optionsChecked=pset({})
-    InputDir=pset(None)
+    InputDir=pset({})
     OutputDir=pset(None)
-    modelFile=pset(None)
-    reference=pset(None)
-    device=pset("cuda:all")
-    nameSort=pset(False)
-    command=pset(None)
-    Inputfile=pset(None)
-    outputfile=pset(None)
+    modelFile=pset("ont-guppy/data/template_r9.4.1_450bps_hac.jsn")
+    configfile=pset(None)
+    device=pset(None)
+    flowcell=pset(None)
     kitname=pset(None)
-    resumefrom=pset(None)
-    trim=pset(None)
-    noclassify=pset(False)
-    sortandindex=pset(False)
-    modelstring=pset(None)
-    emitfastq=pset(False)
-    emitsam=pset(False)
-    chunksize=pset(None)
+    compressfastq=pset(True)
+    chunksPerRunner=pset(1000)
+    numCallers=pset(None)
+    gpuRunnersPerDevice=pset(None)
+    fastqdir=pset(None)
     def __init__(self):
         super().__init__(self.docker_image_name, self.docker_image_tag)
-        with open(getJsonName(__file__,"dorado")) as f:
+        with open(getJsonName(__file__,"guppy")) as f:
             self.data=jsonpickle.decode(f.read())
             f.close()
         self.initVolumes()
@@ -64,24 +58,14 @@ class OWdorado(OWBwBWidget):
             self.handleInputs("trigger", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
+    def handleInputsfastqdir(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("fastqdir", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
     def handleInputstrigger2(self, value, *args):
         if args and len(args) > 0: 
             self.handleInputs("trigger2", value, args[0][0], test=args[0][3])
-        else:
-            self.handleInputs("inputFile", value, None, False)
-    def handleInputsreference(self, value, *args):
-        if args and len(args) > 0: 
-            self.handleInputs("reference", value, args[0][0], test=args[0][3])
-        else:
-            self.handleInputs("inputFile", value, None, False)
-    def handleInputsOutputDir(self, value, *args):
-        if args and len(args) > 0: 
-            self.handleInputs("OutputDir", value, args[0][0], test=args[0][3])
-        else:
-            self.handleInputs("inputFile", value, None, False)
-    def handleInputsmodelFile(self, value, *args):
-        if args and len(args) > 0: 
-            self.handleInputs("modelFile", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
     def handleOutputs(self):

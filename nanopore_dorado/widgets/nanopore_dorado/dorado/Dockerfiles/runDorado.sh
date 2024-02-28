@@ -34,7 +34,9 @@ if [ $command2 == "basecaller" ]; then
 else
 	if [ -n "$outputFile" ]; then
 		echo "$command" "${inputArgs[@]}" > "$outputFile"
+    eval "$command" "${inputArgs[@]}" > "$outputFile"
 	else
 		echo "$command" "${inputArgs[@]}"
+    eval "$command" "${inputArgs[@]}"
 	fi
 fi
