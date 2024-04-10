@@ -15,11 +15,11 @@ class OWdorado(OWBwBWidget):
     name = "dorado"
     description = "Dorado Basecaller"
     priority = 3
-    icon = getIconName(__file__,"guppy1.png")
+    icon = getIconName(__file__,"dorado.png")
     want_main_area = False
-    docker_image_name = "dorado"
-    docker_image_tag = "0.3.4-linux-x64"
-    inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile")]
+    docker_image_name = "biodepot/dorado-samtools"
+    docker_image_tag = "latest"
+    inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("trigger3",str,"handleInputstrigger3"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile"),("modelDir",str,"handleInputsmodelDir"),("outputfile",str,"handleInputsoutputfile")]
     outputs = [("OutputDir",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
     runMode=pset(0)
@@ -30,10 +30,23 @@ class OWdorado(OWBwBWidget):
     optionsChecked=pset({})
     InputDir=pset(None)
     OutputDir=pset(None)
-    modelFile=pset("dna_r9.4.1_e8_fast@v3.4")
+    modelFile=pset(None)
     reference=pset(None)
     device=pset("cuda:all")
     nameSort=pset(False)
+    command=pset(None)
+    Inputfile=pset(None)
+    outputfile=pset(None)
+    kitname=pset(None)
+    resumefrom=pset(None)
+    trim=pset(None)
+    noclassify=pset(False)
+    sortandindex=pset(False)
+    modelstring=pset(None)
+    emitfastq=pset(False)
+    emitsam=pset(False)
+    chunksize=pset(None)
+    modelDir=pset(None)
     def __init__(self):
         super().__init__(self.docker_image_name, self.docker_image_tag)
         with open(getJsonName(__file__,"dorado")) as f:
@@ -57,6 +70,11 @@ class OWdorado(OWBwBWidget):
             self.handleInputs("trigger2", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
+    def handleInputstrigger3(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("trigger3", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
     def handleInputsreference(self, value, *args):
         if args and len(args) > 0: 
             self.handleInputs("reference", value, args[0][0], test=args[0][3])
@@ -70,6 +88,16 @@ class OWdorado(OWBwBWidget):
     def handleInputsmodelFile(self, value, *args):
         if args and len(args) > 0: 
             self.handleInputs("modelFile", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
+    def handleInputsmodelDir(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("modelDir", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
+    def handleInputsoutputfile(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("outputfile", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
     def handleOutputs(self):

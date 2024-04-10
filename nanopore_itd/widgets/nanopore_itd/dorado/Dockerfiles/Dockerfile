@@ -1,8 +1,15 @@
-FROM nvidia/cuda:11.1.1-base-ubuntu20.04
+FROM debian:bookworm-slim
+ARG TARGETPLATFORM=linux/amd64
+ARG VERSION=0.5.3
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y wget bc rsync samtools && rm -rf /var/lib/apt/lists/
-RUN wget -qO- https://cdn.oxfordnanoportal.com/software/analysis/dorado-0.3.4-linux-x64.tar.gz | tar -xzvf -
-ENV PATH="${PWD}/dorado-0.3.4-linux-x64/bin:${PATH}"
-RUN mkdir -p dorado-0.3.4-linux-x64/data/ && dorado download --directory dorado-0.3.4-linux-x64/data/
-COPY runDorado.sh ./runDorado.sh
-RUN chmod +x runDorado.sh
+RUN apt-get update && apt-get install -y curl samtools && apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*   
+RUN case ${TARGETPLATFORM} in \
+    'linux/amd64') \
+      curl -L https://cdn.oxfordnanoportal.com/software/analysis/dorado-${VERSION}-linux-x64.tar.gz | tar xz -C /usr/local/ --strip-components=1 ;; \
+    'linux/arm64') \
+      curl -L https://cdn.oxfordnanoportal.com/software/analysis/dorado-${VERSION}-linux-arm64.tar.gz | tar xz -C /usr/local/ --strip-components=1 ;; \
+    *) \
+      echo "Unsupported platform: ${TARGETPLATFORM}" && exit 1 ;; \
+    esac
+COPY runDorado.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/runDorado.sh

@@ -15,10 +15,10 @@ class OWsvim(OWBwBWidget):
     name = "svim"
     description = "SVIM Variant Caller"
     priority = 3
-    icon = getIconName(__file__,"default.png")
+    icon = getIconName(__file__,"svim.png")
     want_main_area = False
-    docker_image_name = "svim"
-    docker_image_tag = "v2.0.0"
+    docker_image_name = "biodepot/svim"
+    docker_image_tag = "latest"
     inputs = [("InputFile",str,"handleInputsInputFile"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir")]
     outputs = [("OutputDir",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
