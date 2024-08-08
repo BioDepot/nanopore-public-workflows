@@ -19,7 +19,7 @@ class OWPEPPER(OWBwBWidget):
     want_main_area = False
     docker_image_name = "kishwars/pepper_deepvariant"
     docker_image_tag = "r0.8-gpu"
-    inputs = [("inputBam",str,"handleInputsinputBam"),("inputRef",str,"handleInputsinputRef"),("threads",str,"handleInputsthreads"),("trigger",str,"handleInputstrigger")]
+    inputs = [("inputBam",str,"handleInputsinputBam"),("inputRef",str,"handleInputsinputRef"),("threads",str,"handleInputsthreads"),("trigger",str,"handleInputstrigger"),("outputDir",str,"handleInputsoutputDir")]
     outputs = [("outputDir",str),("outputPrefix",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
     runMode=pset(0)
@@ -60,6 +60,11 @@ class OWPEPPER(OWBwBWidget):
     def handleInputstrigger(self, value, *args):
         if args and len(args) > 0: 
             self.handleInputs("trigger", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
+    def handleInputsoutputDir(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("outputDir", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
     def handleOutputs(self):

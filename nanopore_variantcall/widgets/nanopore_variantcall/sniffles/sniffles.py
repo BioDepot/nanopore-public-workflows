@@ -19,7 +19,7 @@ class OWsniffles(OWBwBWidget):
     want_main_area = False
     docker_image_name = "tuannguyen90/sniffles"
     docker_image_tag = "2.2"
-    inputs = [("inputFile",str,"handleInputsinputFile"),("reference",str,"handleInputsreference"),("trigger",str,"handleInputstrigger")]
+    inputs = [("inputFile",str,"handleInputsinputFile"),("reference",str,"handleInputsreference"),("trigger",str,"handleInputstrigger"),("vcfOutput",str,"handleInputsvcfOutput")]
     outputs = [("File",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
     runMode=pset(0)
@@ -55,6 +55,11 @@ class OWsniffles(OWBwBWidget):
     def handleInputstrigger(self, value, *args):
         if args and len(args) > 0: 
             self.handleInputs("trigger", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
+    def handleInputsvcfOutput(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("vcfOutput", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
     def handleOutputs(self):

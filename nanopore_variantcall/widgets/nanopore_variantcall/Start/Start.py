@@ -19,7 +19,7 @@ class OWStart(OWBwBWidget):
     want_main_area = False
     docker_image_name = "biodepot/nanopore-start"
     docker_image_tag = "alpine_3.12"
-    outputs = [("data_dir",str),("genome_dir",str),("genome_file",str),("bam_dir",str),("fast5_dir",str),("model_dir",str),("varcallout_dir",str)]
+    outputs = [("data_dir",str),("genome_dir",str),("genome_file",str),("bam_dir",str),("fast5_dir",str),("model_dir",str),("varcallout_dir",str),("bamfile_out",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
     runMode=pset(0)
     exportGraphics=pset(False)
@@ -34,6 +34,7 @@ class OWStart(OWBwBWidget):
     bam_dir=pset(None)
     model_dir=pset(None)
     varcallout_dir=pset(None)
+    bamfile_out=pset(None)
     def __init__(self):
         super().__init__(self.docker_image_name, self.docker_image_tag)
         with open(getJsonName(__file__,"Start")) as f:
@@ -71,3 +72,7 @@ class OWStart(OWBwBWidget):
         if hasattr(self,"varcallout_dir"):
             outputValue=getattr(self,"varcallout_dir")
         self.send("varcallout_dir", outputValue)
+        outputValue=None
+        if hasattr(self,"bamfile_out"):
+            outputValue=getattr(self,"bamfile_out")
+        self.send("bamfile_out", outputValue)

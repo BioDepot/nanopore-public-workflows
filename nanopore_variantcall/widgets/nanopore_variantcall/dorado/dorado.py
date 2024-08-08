@@ -19,7 +19,7 @@ class OWdorado(OWBwBWidget):
     want_main_area = False
     docker_image_name = "biodepot/dorado-samtools"
     docker_image_tag = "latest"
-    inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("trigger3",str,"handleInputstrigger3"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile"),("modelDir",str,"handleInputsmodelDir")]
+    inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("trigger3",str,"handleInputstrigger3"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile"),("modelDir",str,"handleInputsmodelDir"),("outputfile",str,"handleInputsoutputfile")]
     outputs = [("OutputDir",str),("outputfile",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
     runMode=pset(0)
@@ -48,6 +48,7 @@ class OWdorado(OWBwBWidget):
     chunksize=pset(None)
     modelDir=pset(None)
     demuxReads=pset(None)
+    noTrim=pset(False)
     def __init__(self):
         super().__init__(self.docker_image_name, self.docker_image_tag)
         with open(getJsonName(__file__,"dorado")) as f:
@@ -94,6 +95,11 @@ class OWdorado(OWBwBWidget):
     def handleInputsmodelDir(self, value, *args):
         if args and len(args) > 0: 
             self.handleInputs("modelDir", value, args[0][0], test=args[0][3])
+        else:
+            self.handleInputs("inputFile", value, None, False)
+    def handleInputsoutputfile(self, value, *args):
+        if args and len(args) > 0: 
+            self.handleInputs("outputfile", value, args[0][0], test=args[0][3])
         else:
             self.handleInputs("inputFile", value, None, False)
     def handleOutputs(self):
