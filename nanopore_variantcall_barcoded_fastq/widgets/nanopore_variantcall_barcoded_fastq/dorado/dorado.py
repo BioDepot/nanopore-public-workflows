@@ -18,7 +18,7 @@ class OWdorado(OWBwBWidget):
     icon = getIconName(__file__,"dorado.png")
     want_main_area = False
     docker_image_name = "biodepot/dorado-samtools"
-    docker_image_tag = "latest"
+    docker_image_tag = "0.7.3"
     inputs = [("InputDir",str,"handleInputsInputDir"),("trigger",str,"handleInputstrigger"),("trigger2",str,"handleInputstrigger2"),("trigger3",str,"handleInputstrigger3"),("reference",str,"handleInputsreference"),("OutputDir",str,"handleInputsOutputDir"),("modelFile",str,"handleInputsmodelFile"),("modelDir",str,"handleInputsmodelDir"),("outputfile",str,"handleInputsoutputfile")]
     outputs = [("OutputDir",str),("outputfile",str)]
     pset=functools.partial(settings.Setting,schema_only=True)
